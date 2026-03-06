@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<title>Password Strength Analyzer</title>
+
+<link rel="stylesheet" href="style.css">
+
+<link rel="icon" href="lock.png">
+
+</head>
+
+<body>
+
+<button id="dark-toggle" class="dark-toggle">🌞</button>
+
+<div class="container">
+
+<h1>Password Strength Analyzer</h1>
+
+<div class="input-group">
+<input type="password" id="pw" placeholder="Type password...">
+<button id="toggle">Show</button>
+</div>
+
+<p id="length">Length: 0 characters</p>
+
+<div class="strength-bar">
+<div id="strength-fill"></div>
+</div>
+
+<p id="strength-text"></p>
+
+<p id="entropy"></p>
+<p id="crack"></p>
+<p id="warning"></p>
+
+<div class="requirements">
+
+<p class="req-title">Password Requirements</p>
+
+<ul>
+<li id="req-length">At least 8 characters</li>
+<li id="req-upper">Contains uppercase letter</li>
+<li id="req-lower">Contains lowercase letter</li>
+<li id="req-number">Contains number</li>
+<li id="req-special">Contains special character</li>
+</ul>
+
+</div>
+
+<div class="buttons">
+<button id="generate">Generate Strong Password</button>
+<button id="copy">Copy Password</button>
+</div>
+
+</div>
+
+<script src="script.js"></script>
+
+</body>
+</html>
