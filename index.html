@@ -1,62 +1,162 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Password Strength Analyzer</title>
-
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
-
-<link rel="icon" href="lock.png">
-
 </head>
-
 <body>
 
-<button id="dark-toggle" class="dark-toggle">🌞</button>
+<button id="dark-toggle" class="dark-toggle" title="Toggle theme">🌞</button>
 
-<div class="container">
+<div class="page-wrapper">
+  <header class="site-header">
+    <div class="header-inner">
+      <h1 class="site-title">Password Strength Analyzer</h1>
+      <p class="header-sub">Real-time entropy analysis · No data stored or sent</p>
+    </div>
+  </header>
 
-<h1>Password Strength Analyzer</h1>
+  <main class="main-grid">
 
-<div class="input-group">
-<input type="password" id="pw" placeholder="Type password...">
-<button id="toggle">Show</button>
-</div>
+    <!-- LEFT PANEL -->
+    <section class="panel panel-left">
 
-<p id="length">Length: 0 characters</p>
+      <div class="input-block">
+        <label class="field-label">Your Password</label>
+        <div class="input-row">
+          <input type="password" id="pw" placeholder="Type or generate…" autocomplete="off" spellcheck="false">
+          <button id="toggle" class="btn-icon" title="Show/hide">
+            <svg id="eye-open" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            <svg id="eye-closed" style="display:none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+          </button>
+        </div>
+        <div class="meta-row">
+          <span id="length">0 characters</span>
+          <span id="warning"></span>
+        </div>
+      </div>
 
-<div class="strength-bar">
-<div id="strength-fill"></div>
-</div>
+      <!-- Strength meter -->
+      <div class="strength-block">
+        <div class="strength-header">
+          <span class="field-label">Strength</span>
+          <span id="strength-badge" class="strength-badge">—</span>
+        </div>
+        <div class="strength-bar-track">
+          <div id="strength-fill"></div>
+        </div>
+        <div class="strength-segments">
+          <span>Weak</span><span>Fair</span><span>Good</span><span>Strong</span>
+        </div>
+      </div>
 
-<p id="strength-text"></p>
+      <!-- Stats row -->
+      <div class="stats-row">
+        <div class="stat-card">
+          <span class="stat-label">Entropy</span>
+          <span id="entropy-val" class="stat-val">—</span>
+          <span class="stat-unit">bits</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-label">Crack time</span>
+          <span id="crack-val" class="stat-val">—</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-label">Score</span>
+          <span id="score-val" class="stat-val">0</span>
+          <span class="stat-unit">/ 5</span>
+        </div>
+      </div>
 
-<p id="entropy"></p>
-<p id="crack"></p>
-<p id="warning"></p>
+      <!-- Composition bar -->
+      <div class="composition-block">
+        <span class="field-label">Character composition</span>
+        <div class="comp-bar-track">
+          <div id="comp-upper" class="comp-seg seg-upper" style="width:0%"></div>
+          <div id="comp-lower" class="comp-seg seg-lower" style="width:0%"></div>
+          <div id="comp-num"   class="comp-seg seg-num"   style="width:0%"></div>
+          <div id="comp-spec"  class="comp-seg seg-spec"  style="width:0%"></div>
+        </div>
+        <div class="comp-legend">
+          <span class="leg-item"><span class="leg-dot dot-upper"></span>Uppercase</span>
+          <span class="leg-item"><span class="leg-dot dot-lower"></span>Lowercase</span>
+          <span class="leg-item"><span class="leg-dot dot-num"></span>Numbers</span>
+          <span class="leg-item"><span class="leg-dot dot-spec"></span>Special</span>
+        </div>
+      </div>
 
-<div class="requirements">
+      <!-- Actions -->
+      <div class="action-row">
+        <button id="generate" class="btn btn-primary">
+          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>
+          Generate
+        </button>
+        <button id="copy" class="btn btn-secondary">
+          <svg id="copy-icon" xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+          <svg id="check-icon" style="display:none;color:#4ade80" xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          <span id="copy-text">Copy</span>
+        </button>
+      </div>
 
-<p class="req-title">Password Requirements</p>
+      <!-- Generator options -->
+      <div class="gen-options">
+        <label class="field-label">Password length</label>
+        <div class="slider-row">
+          <input type="range" id="gen-length" min="8" max="32" value="16" step="1">
+          <span id="gen-length-val" class="slider-val">16</span>
+        </div>
+        <div class="checkbox-row">
+          <label class="cb-label"><input type="checkbox" id="opt-upper" checked> Uppercase</label>
+          <label class="cb-label"><input type="checkbox" id="opt-lower" checked> Lowercase</label>
+          <label class="cb-label"><input type="checkbox" id="opt-num" checked> Numbers</label>
+          <label class="cb-label"><input type="checkbox" id="opt-spec" checked> Special chars</label>
+        </div>
+      </div>
 
-<ul>
-<li id="req-length">At least 8 characters</li>
-<li id="req-upper">Contains uppercase letter</li>
-<li id="req-lower">Contains lowercase letter</li>
-<li id="req-number">Contains number</li>
-<li id="req-special">Contains special character</li>
-</ul>
+    </section>
 
-</div>
+    <!-- RIGHT PANEL -->
+    <section class="panel panel-right">
 
-<div class="buttons">
-<button id="generate">Generate Strong Password</button>
-<button id="copy">Copy Password</button>
-</div>
+      <div class="req-block">
+        <p class="field-label" style="margin-bottom:14px;">Requirements checklist</p>
+        <ul class="req-list">
+          <li id="req-length"  class="req-item"><span class="req-icon"></span>At least 8 characters</li>
+          <li id="req-upper"   class="req-item"><span class="req-icon"></span>Contains uppercase letter</li>
+          <li id="req-lower"   class="req-item"><span class="req-icon"></span>Contains lowercase letter</li>
+          <li id="req-number"  class="req-item"><span class="req-icon"></span>Contains a number</li>
+          <li id="req-special" class="req-item"><span class="req-icon"></span>Contains special character</li>
+        </ul>
+      </div>
 
+      <div class="history-block">
+        <p class="field-label" style="margin-bottom:14px;">Generated history</p>
+        <ul id="history-list" class="history-list">
+          <li class="history-empty">No passwords generated yet</li>
+        </ul>
+      </div>
+
+      <div class="tips-block">
+        <p class="field-label" style="margin-bottom:10px;">Tips for strong passwords</p>
+        <ul class="tips-list">
+          <li>Use at least 16 characters for accounts that matter</li>
+          <li>Avoid dictionary words, names, or dates</li>
+          <li>Never reuse passwords across sites</li>
+          <li>Consider a passphrase: 4 random words strung together</li>
+          <li>Store passwords in a manager, not your browser</li>
+        </ul>
+      </div>
+
+    </section>
+
+  </main>
 </div>
 
 <script src="script.js"></script>
-
 </body>
 </html>
